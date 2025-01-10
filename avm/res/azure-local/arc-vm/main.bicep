@@ -1,3 +1,4 @@
+import { roleAssignmentType, lockType, managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 import * as types from 'types.bicep'
 
 @minLength(1)
@@ -159,15 +160,12 @@ param windowsSshConfig types.sshConfig?
 Controls the Resource Lock configuration for this resource.
 Changing this forces the creation of a new resource.
 ''')
-param lock types.lock?
+param lock lockType?
 
 @description('''
 Controls the Managed Identity configuration on this resource.
 ''')
-param managedIdentities types.managedIdentities = {
-  systemAssigned: false
-  userAssignedResourceIds: []
-}
+param managedIdentities managedIdentityAllType = {}
 
 @description('''
 The OS type of the VM.
@@ -194,7 +192,8 @@ param privateIpAddress string = ''
 @description('''
 The role assignments to create on this resource.
 ''')
-param roleAssignments types.roleAssignment[]
+// TODO: skipServicePrincipalEntraCheck
+param roleAssignments roleAssignmentType[] = []
 
 @description('''
 Enable secure boot.
