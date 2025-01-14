@@ -15,13 +15,17 @@ Admin password
 param adminPassword string
 
 @description('''
-The custom location Id for Azure Local.
+The full custom location Id for Azure Local.
 ''')
 param customLocationId string
 
 @description('''
-The name of a Marketplace Gallery Image already downloaded to the Azure Stack HCI cluster.
-For example: winServer2022-01
+The OS type of the VM.
+''')
+param osType types.osType
+
+@description('''
+The full Marketplace Gallery Image id already downloaded to Azure Local.
 ''')
 param imageId string
 
@@ -59,7 +63,7 @@ Provide an empty array for no additional disks,
 or an array following the example below.
 ''')
 // TODO: not equivalent to map
-param dataDiskParams types.diskParam[]
+param dataDiskParams types.diskParam[] = []
 
 @description('''
 Optional tags of the domain join extension.
@@ -168,11 +172,6 @@ Controls the Managed Identity configuration on this resource.
 param managedIdentities managedIdentityAllType = {}
 
 @description('''
-The OS type of the VM.
-''')
-param osType types.osType = 'Windows'
-
-@description('''
 Optional tags of the nic.
 ''')
 // TODO: not equilavent to map(string)
@@ -218,3 +217,108 @@ param typeHandlerVersion string = '1.3'
 
 @description('The user storage ID to store images.')
 param userStorageId string = ''
+
+/*
+var builtInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+}
+*/
+
+resource l 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock)) {
+  name: lock!.name ?? guid(name) // TODO
+  properties: {
+    level: lock!.kind ?? 'None'
+  }
+}
+
+resource r 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for roleAssignment in roleAssignments: {
+    name: roleAssignment.name ?? guid(roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      // TODO: complete list
+      principalId: roleAssignment.principalId
+      principalType: roleAssignment.principalType
+      roleDefinitionId: (contains(
+          roleAssignment.roleDefinitionIdOrName,
+          '/providers/Microsoft.Authorization/roleDefinitions/'
+        )
+        ? roleAssignment.roleDefinitionIdOrName
+        : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+    }
+  }
+]
+
+resource h 'Microsoft.HybridCompute/machines@2024-07-10' = {
+  name: name
+  location: location
+  kind: 'HCI'
+  identity: {
+    type: 'SystemAssigned'
+  }
+}
+
+resource n 'Microsoft.AzureStackHCI/networkInterfaces@2024-01-01' = {
+  name: name
+  location: location
+  extendedLocation: {
+    type: 'CustomLocation'
+    name: customLocationId
+  }
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          subnet: logicalNetworkId // TODO: warning
+        }
+      }
+    ]
+  }
+}
+
+resource v 'Microsoft.AzureStackHCI/virtualMachineInstances@2024-01-01' = {
+  name: 'default'
+  scope: h
+  extendedLocation: {
+    type: 'CustomLocation'
+    name: customLocationId
+  }
+  properties: {
+    hardwareProfile: {
+      vmSize: 'Custom'
+      processors: vCpuCount
+      memoryMB: memoryMb
+      dynamicMemoryConfig: dynamicMemory
+        ? {
+            targetMemoryBuffer: dynamicMemoryMb
+            maximumMemoryMB: maxDynamicMemoryMb
+            minimumMemoryMB: minDynamicMemoryMb
+          }
+        : null
+    }
+    osProfile: {
+      adminUsername: adminUsername
+      adminPassword: adminPassword
+      computerName: name
+    }
+    storageProfile: {
+      imageReference: imageId
+      dataDisks: dataDiskParams
+    }
+    networkProfile: {
+      networkInterfaces: {
+        id: n.id
+      }
+    }
+  }
+}
