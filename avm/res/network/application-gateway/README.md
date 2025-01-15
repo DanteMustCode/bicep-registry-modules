@@ -136,7 +136,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -243,6 +243,98 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'backendAddressPool1'
+  }
+]
+param backendHttpSettingsCollection = [
+  {
+    name: 'backendHttpSettings1'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      port: 80
+      protocol: 'Http'
+    }
+  }
+]
+param frontendIPConfigurations = [
+  {
+    name: 'frontendIPConfig1'
+    properties: {
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendPorts = [
+  {
+    name: 'frontendPort1'
+    properties: {
+      port: 80
+    }
+  }
+]
+param gatewayIPConfigurations = [
+  {
+    name: 'publicIPConfig1'
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param httpListeners = [
+  {
+    name: 'httpListener1'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostName: 'www.contoso.com'
+      protocol: 'Http'
+    }
+  }
+]
+param location = '<location>'
+param requestRoutingRules = [
+  {
+    name: 'requestRoutingRule1'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 100
+      ruleType: 'Basic'
+    }
+  }
+]
 ```
 
 </details>
@@ -718,7 +810,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1230,6 +1322,466 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'appServiceBackendPool'
+    properties: {
+      backendAddresses: [
+        {
+          fqdn: 'aghapp.azurewebsites.net'
+        }
+      ]
+    }
+  }
+  {
+    name: 'privateVmBackendPool'
+    properties: {
+      backendAddresses: [
+        {
+          ipAddress: '10.0.0.4'
+        }
+      ]
+    }
+  }
+]
+param backendHttpSettingsCollection = [
+  {
+    name: 'appServiceBackendHttpsSetting'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      pickHostNameFromBackendAddress: true
+      port: 443
+      protocol: 'Https'
+      requestTimeout: 30
+    }
+  }
+  {
+    name: 'privateVmHttpSetting'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      pickHostNameFromBackendAddress: false
+      port: 80
+      probe: {
+        id: '<id>'
+      }
+      protocol: 'Http'
+      requestTimeout: 30
+    }
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+enableHttp2: true
+param enableTelemetry = '<enableTelemetry>'
+param frontendIPConfigurations = [
+  {
+    name: 'private'
+    properties: {
+      privateIPAddress: '10.0.0.20'
+      privateIPAllocationMethod: 'Static'
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'public'
+    properties: {
+      privateIPAllocationMethod: 'Dynamic'
+      privateLinkConfiguration: {
+        id: '<id>'
+      }
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendPorts = [
+  {
+    name: 'port443'
+    properties: {
+      port: 443
+    }
+  }
+  {
+    name: 'port4433'
+    properties: {
+      port: 4433
+    }
+  }
+  {
+    name: 'port80'
+    properties: {
+      port: 80
+    }
+  }
+  {
+    name: 'port8080'
+    properties: {
+      port: 8080
+    }
+  }
+]
+param gatewayIPConfigurations = [
+  {
+    name: 'apw-ip-configuration'
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param httpListeners = [
+  {
+    name: 'public443'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'https'
+      requireServerNameIndication: false
+      sslCertificate: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'private4433'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'https'
+      requireServerNameIndication: false
+      sslCertificate: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'httpRedirect80'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'Http'
+      requireServerNameIndication: false
+    }
+  }
+  {
+    name: 'httpRedirect8080'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'Http'
+      requireServerNameIndication: false
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'public'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param privateLinkConfigurations = [
+  {
+    id: '<id>'
+    name: 'pvtlink01'
+    properties: {
+      ipConfigurations: [
+        {
+          id: '<id>'
+          name: 'privateLinkIpConfig1'
+          properties: {
+            primary: false
+            privateIPAllocationMethod: 'Dynamic'
+            subnet: {
+              id: '<id>'
+            }
+          }
+        }
+      ]
+    }
+  }
+]
+param probes = [
+  {
+    name: 'privateVmHttpSettingProbe'
+    properties: {
+      host: '10.0.0.4'
+      interval: 60
+      match: {
+        statusCodes: [
+          '200'
+          '401'
+        ]
+      }
+      minServers: 3
+      path: '/'
+      pickHostNameFromBackendHttpSettings: false
+      protocol: 'Http'
+      timeout: 15
+      unhealthyThreshold: 5
+    }
+  }
+]
+param redirectConfigurations = [
+  {
+    name: 'httpRedirect80'
+    properties: {
+      includePath: true
+      includeQueryString: true
+      redirectType: 'Permanent'
+      requestRoutingRules: [
+        {
+          id: '<id>'
+        }
+      ]
+      targetListener: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'httpRedirect8080'
+    properties: {
+      includePath: true
+      includeQueryString: true
+      redirectType: 'Permanent'
+      requestRoutingRules: [
+        {
+          id: '<id>'
+        }
+      ]
+      targetListener: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param requestRoutingRules = [
+  {
+    name: 'public443-appServiceBackendHttpsSetting-appServiceBackendHttpsSetting'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 200
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'private4433-privateVmHttpSetting-privateVmHttpSetting'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 250
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'httpRedirect80-public443'
+    properties: {
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 300
+      redirectConfiguration: {
+        id: '<id>'
+      }
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'httpRedirect8080-private4433'
+    properties: {
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 350
+      redirectConfiguration: {
+        id: '<id>'
+      }
+      rewriteRuleSet: {
+        id: '<id>'
+      }
+      ruleType: 'Basic'
+    }
+  }
+]
+param rewriteRuleSets = [
+  {
+    id: '<id>'
+    name: 'customRewrite'
+    properties: {
+      rewriteRules: [
+        {
+          actionSet: {
+            requestHeaderConfigurations: [
+              {
+                headerName: 'Content-Type'
+                headerValue: 'JSON'
+              }
+              {
+                headerName: 'someheader'
+              }
+            ]
+            responseHeaderConfigurations: []
+          }
+          conditions: []
+          name: 'NewRewrite'
+          ruleSequence: 100
+        }
+      ]
+    }
+  }
+]
+param roleAssignments = [
+  {
+    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sku = 'WAF_v2'
+param sslCertificates = [
+  {
+    name: 'az-apgw-x-001-ssl-certificate'
+    properties: {
+      keyVaultSecretId: '<keyVaultSecretId>'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param webApplicationFirewallConfiguration = {
+  disabledRuleGroups: [
+    {
+      ruleGroupName: 'Known-CVEs'
+    }
+    {
+      ruleGroupName: 'REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION'
+    }
+    {
+      ruleGroupName: 'REQUEST-941-APPLICATION-ATTACK-XSS'
+    }
+  ]
+  enabled: true
+  exclusions: [
+    {
+      matchVariable: 'RequestHeaderNames'
+      selector: 'hola'
+      selectorMatchOperator: 'StartsWith'
+    }
+  ]
+  fileUploadLimitInMb: 100
+  firewallMode: 'Detection'
+  maxRequestBodySizeInKb: 128
+  requestBodyCheck: true
+  ruleSetType: 'OWASP'
+  ruleSetVersion: '3.0'
+}
+param zones = [
+  '1'
+  '2'
+  '3'
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -1650,7 +2202,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2108,6 +2660,416 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'appServiceBackendPool'
+    properties: {
+      backendAddresses: [
+        {
+          fqdn: 'aghapp.azurewebsites.net'
+        }
+      ]
+    }
+  }
+  {
+    name: 'privateVmBackendPool'
+    properties: {
+      backendAddresses: [
+        {
+          ipAddress: '10.0.0.4'
+        }
+      ]
+    }
+  }
+]
+param backendHttpSettingsCollection = [
+  {
+    name: 'appServiceBackendHttpsSetting'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      pickHostNameFromBackendAddress: true
+      port: 443
+      protocol: 'Https'
+      requestTimeout: 30
+    }
+  }
+  {
+    name: 'privateVmHttpSetting'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      pickHostNameFromBackendAddress: false
+      port: 80
+      probe: {
+        id: '<id>'
+      }
+      protocol: 'Http'
+      requestTimeout: 30
+    }
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+enableHttp2: true
+param enableTelemetry = '<enableTelemetry>'
+param firewallPolicyResourceId = '<firewallPolicyResourceId>'
+param frontendIPConfigurations = [
+  {
+    name: 'private'
+    properties: {
+      privateIPAddress: '10.0.0.20'
+      privateIPAllocationMethod: 'Static'
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'public'
+    properties: {
+      privateIPAllocationMethod: 'Dynamic'
+      privateLinkConfiguration: {
+        id: '<id>'
+      }
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendPorts = [
+  {
+    name: 'port443'
+    properties: {
+      port: 443
+    }
+  }
+  {
+    name: 'port4433'
+    properties: {
+      port: 4433
+    }
+  }
+  {
+    name: 'port80'
+    properties: {
+      port: 80
+    }
+  }
+  {
+    name: 'port8080'
+    properties: {
+      port: 8080
+    }
+  }
+]
+param gatewayIPConfigurations = [
+  {
+    name: 'apw-ip-configuration'
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param httpListeners = [
+  {
+    name: 'public443'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'https'
+      requireServerNameIndication: false
+      sslCertificate: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'private4433'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'https'
+      requireServerNameIndication: false
+      sslCertificate: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'httpRedirect80'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'Http'
+      requireServerNameIndication: false
+    }
+  }
+  {
+    name: 'httpRedirect8080'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'Http'
+      requireServerNameIndication: false
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'public'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param privateLinkConfigurations = [
+  {
+    id: '<id>'
+    name: 'pvtlink01'
+    properties: {
+      ipConfigurations: [
+        {
+          id: '<id>'
+          name: 'privateLinkIpConfig1'
+          properties: {
+            primary: false
+            privateIPAllocationMethod: 'Dynamic'
+            subnet: {
+              id: '<id>'
+            }
+          }
+        }
+      ]
+    }
+  }
+]
+param probes = [
+  {
+    name: 'privateVmHttpSettingProbe'
+    properties: {
+      host: '10.0.0.4'
+      interval: 60
+      match: {
+        statusCodes: [
+          '200'
+          '401'
+        ]
+      }
+      minServers: 3
+      path: '/'
+      pickHostNameFromBackendHttpSettings: false
+      protocol: 'Http'
+      timeout: 15
+      unhealthyThreshold: 5
+    }
+  }
+]
+param redirectConfigurations = [
+  {
+    name: 'httpRedirect80'
+    properties: {
+      includePath: true
+      includeQueryString: true
+      redirectType: 'Permanent'
+      requestRoutingRules: [
+        {
+          id: '<id>'
+        }
+      ]
+      targetListener: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'httpRedirect8080'
+    properties: {
+      includePath: true
+      includeQueryString: true
+      redirectType: 'Permanent'
+      requestRoutingRules: [
+        {
+          id: '<id>'
+        }
+      ]
+      targetListener: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param requestRoutingRules = [
+  {
+    name: 'public443-appServiceBackendHttpsSetting-appServiceBackendHttpsSetting'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 200
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'private4433-privateVmHttpSetting-privateVmHttpSetting'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 250
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'httpRedirect80-public443'
+    properties: {
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 300
+      redirectConfiguration: {
+        id: '<id>'
+      }
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'httpRedirect8080-private4433'
+    properties: {
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 350
+      redirectConfiguration: {
+        id: '<id>'
+      }
+      rewriteRuleSet: {
+        id: '<id>'
+      }
+      ruleType: 'Basic'
+    }
+  }
+]
+param rewriteRuleSets = [
+  {
+    id: '<id>'
+    name: 'customRewrite'
+    properties: {
+      rewriteRules: [
+        {
+          actionSet: {
+            requestHeaderConfigurations: [
+              {
+                headerName: 'Content-Type'
+                headerValue: 'JSON'
+              }
+              {
+                headerName: 'someheader'
+              }
+            ]
+            responseHeaderConfigurations: []
+          }
+          conditions: []
+          name: 'NewRewrite'
+          ruleSequence: 100
+        }
+      ]
+    }
+  }
+]
+param sku = 'WAF_v2'
+param sslCertificates = [
+  {
+    name: 'az-apgw-x-001-ssl-certificate'
+    properties: {
+      keyVaultSecretId: '<keyVaultSecretId>'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -2228,6 +3190,8 @@ The number of Application instances to be configured.
 - Required: No
 - Type: int
 - Default: `2`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `customErrorConfigurations`
 
@@ -2236,6 +3200,8 @@ Custom error configurations of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings`
 
@@ -2243,6 +3209,8 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -2264,6 +3232,8 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -2271,6 +3241,8 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -2285,6 +3257,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -2292,6 +3266,8 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -2307,6 +3283,8 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -2314,6 +3292,8 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -2321,6 +3301,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -2328,6 +3310,8 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -2335,6 +3319,8 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -2354,6 +3340,8 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -2361,6 +3349,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -2368,6 +3358,8 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -2375,6 +3367,8 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -2382,6 +3376,8 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableFips`
 
@@ -2390,6 +3386,8 @@ Whether FIPS is enabled on the application gateway resource.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableHttp2`
 
@@ -2398,6 +3396,8 @@ Whether HTTP2 is enabled on the application gateway resource.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableRequestBuffering`
 
@@ -2406,6 +3406,8 @@ Enable request buffering.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableResponseBuffering`
 
@@ -2414,6 +3416,8 @@ Enable response buffering.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableTelemetry`
 
@@ -2422,6 +3426,8 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `firewallPolicyResourceId`
 
@@ -2430,6 +3436,8 @@ The resource ID of an associated firewall policy. Should be configured for secur
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `frontendIPConfigurations`
 
@@ -2438,6 +3446,8 @@ Frontend IP addresses of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `frontendPorts`
 
@@ -2446,6 +3456,8 @@ Frontend ports of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `gatewayIPConfigurations`
 
@@ -2454,6 +3466,8 @@ Subnets of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `httpListeners`
 
@@ -2462,6 +3476,8 @@ Http listeners of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `listeners`
 
@@ -2470,6 +3486,8 @@ Listeners of the application gateway resource. For default limits, see [Applicat
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `loadDistributionPolicies`
 
@@ -2478,6 +3496,8 @@ Load distribution policies of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `location`
 
@@ -2486,6 +3506,8 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `lock`
 
@@ -2493,6 +3515,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -2515,6 +3539,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `lock.name`
 
@@ -2522,6 +3548,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `managedIdentities`
 
@@ -2529,6 +3557,8 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -2540,8 +3570,10 @@ The managed identity definition for this resource.
 
 The resource ID(s) to assign to the resource.
 
-- Required: Yes
+- Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints`
 
@@ -2549,6 +3581,8 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -2583,6 +3617,8 @@ The subresource to deploy the private endpoint for. For example "blob", "table",
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -2590,6 +3626,8 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -2597,6 +3635,8 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -2604,20 +3644,20 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -2625,6 +3665,17 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- MinValue: 0
+- MaxValue: 10
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -2632,6 +3683,8 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -2639,6 +3692,8 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -2646,6 +3701,8 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -2660,6 +3717,8 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -2667,6 +3726,8 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -2682,6 +3743,8 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -2689,6 +3752,8 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -2696,6 +3761,8 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -2703,6 +3770,8 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.location`
 
@@ -2710,6 +3779,8 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -2717,6 +3788,8 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -2739,6 +3812,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.lock.name`
 
@@ -2746,6 +3821,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -2753,6 +3830,8 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.name`
 
@@ -2760,6 +3839,8 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -2767,6 +3848,8 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -2786,6 +3869,8 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -2805,6 +3890,8 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -2812,6 +3899,8 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -2819,6 +3908,8 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2826,6 +3917,8 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -2833,6 +3926,8 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -2840,6 +3935,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -2876,6 +3973,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -2883,6 +3982,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -2890,6 +3991,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -2903,6 +4006,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2910,6 +4015,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -2917,6 +4024,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -2924,6 +4033,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -2941,6 +4052,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -2948,6 +4061,8 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateLinkConfigurations`
 
@@ -2956,6 +4071,8 @@ PrivateLink configurations on application gateway.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `probes`
 
@@ -2964,6 +4081,8 @@ Probes of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `redirectConfigurations`
 
@@ -2972,6 +4091,8 @@ Redirect configurations of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `requestRoutingRules`
 
@@ -2980,6 +4101,8 @@ Request routing rules of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `rewriteRuleSets`
 
@@ -2988,6 +4111,8 @@ Rewrite rules for the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments`
 
@@ -2995,6 +4120,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 10
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -3026,6 +4153,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -3033,6 +4162,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.condition`
 
@@ -3040,6 +4171,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -3053,6 +4186,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -3060,6 +4195,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.description`
 
@@ -3067,6 +4204,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.name`
 
@@ -3074,6 +4213,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -3091,6 +4232,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `routingRules`
 
@@ -3099,6 +4242,8 @@ Routing rules of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sku`
 
@@ -3119,6 +4264,8 @@ The name of the SKU for the Application Gateway.
     'WAF_v2'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslCertificates`
 
@@ -3127,6 +4274,8 @@ SSL certificates of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslPolicyCipherSuites`
 
@@ -3174,6 +4323,8 @@ Ssl cipher suites to be enabled in the specified order to application gateway.
     'TLS_RSA_WITH_AES_256_GCM_SHA384'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslPolicyMinProtocolVersion`
 
@@ -3191,6 +4342,8 @@ Ssl protocol enums.
     'TLSv1_3'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslPolicyName`
 
@@ -3210,6 +4363,8 @@ Ssl predefined policy name enums.
     'AppGwSslPolicy20220101S'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslPolicyType`
 
@@ -3226,6 +4381,8 @@ Type of Ssl Policy.
     'Predefined'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslProfiles`
 
@@ -3234,6 +4391,8 @@ SSL profiles of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `tags`
 
@@ -3241,6 +4400,8 @@ Resource tags.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `trustedClientCertificates`
 
@@ -3249,6 +4410,8 @@ Trusted client certificates of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `trustedRootCertificates`
 
@@ -3257,6 +4420,8 @@ Trusted Root certificates of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `urlPathMaps`
 
@@ -3265,6 +4430,8 @@ URL path map of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `webApplicationFirewallConfiguration`
 
@@ -3273,6 +4440,8 @@ Application gateway web application firewall configuration. Should be configured
 - Required: No
 - Type: object
 - Default: `{}`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `zones`
 
@@ -3288,6 +4457,8 @@ A list of availability zones denoting where the resource needs to come from.
     3
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ## Outputs
 

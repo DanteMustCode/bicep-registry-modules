@@ -8,6 +8,7 @@ This module deploys an App Service Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -44,10 +45,7 @@ This instance deploys the module with a base set of parameters. Note it does inc
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   name: 'serverfarmDeployment'
   params: {
-    // Required parameters
     name: 'wsfmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -57,23 +55,31 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "wsfmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+param name = 'wsfmin001'
 ```
 
 </details>
@@ -109,7 +115,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    kind: 'App'
+    kind: 'app'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -118,11 +124,13 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     perSiteScaling: true
     roleAssignments: [
       {
+        name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -150,7 +158,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -179,7 +187,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       ]
     },
     "kind": {
-      "value": "App"
+      "value": "app"
     },
     "location": {
       "value": "<location>"
@@ -196,11 +204,13 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -230,6 +240,69 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+// Required parameters
+param name = 'wsfmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSettingwsfmax'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param kind = 'app'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'lock'
+}
+param perSiteScaling = true
+param roleAssignments = [
+  {
+    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuCapacity = 3
+param skuName = 'P1v3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneRedundant = true
 ```
 
 </details>
@@ -265,12 +338,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    kind: 'App'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'lock'
-    }
+    kind: 'app'
     skuCapacity: 3
     skuName: 'P1v3'
     tags: {
@@ -288,7 +356,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -317,16 +385,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       ]
     },
     "kind": {
-      "value": "App"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "lock"
-      }
+      "value": "app"
     },
     "skuCapacity": {
       "value": 3
@@ -346,6 +405,44 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+// Required parameters
+param name = 'wsfwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSettingwsfwaf'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param kind = 'app'
+param skuCapacity = 3
+param skuName = 'P1v3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneRedundant = true
 ```
 
 </details>
@@ -400,7 +497,7 @@ Defaults to false when creating Windows/app App Service Plan. Required if creati
 
 - Required: No
 - Type: bool
-- Default: `[equals(parameters('kind'), 'Linux')]`
+- Default: `[equals(parameters('kind'), 'linux')]`
 
 ### Parameter: `appServiceEnvironmentId`
 
@@ -541,15 +638,15 @@ Kind of server OS.
 
 - Required: No
 - Type: string
-- Default: `'App'`
+- Default: `'app'`
 - Allowed:
   ```Bicep
   [
-    'App'
-    'Elastic'
-    'FunctionApp'
-    'Linux'
-    'Windows'
+    'app'
+    'elastic'
+    'functionApp'
+    'linux'
+    'windows'
   ]
   ```
 
@@ -643,6 +740,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -693,6 +791,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -731,6 +836,7 @@ The name of the SKU will Determine the tier, size, family of the App Service Pla
   'B1'
   'P1v3'
   'I1v2'
+  'FC1'
   ```
 
 ### Parameter: `tags`
@@ -788,6 +894,14 @@ Zone Redundant server farms can only be used on Premium or ElasticPremium SKU ti
 | `name` | string | The name of the app service plan. |
 | `resourceGroupName` | string | The resource group the app service plan was deployed into. |
 | `resourceId` | string | The resource ID of the app service plan. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 

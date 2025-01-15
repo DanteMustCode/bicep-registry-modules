@@ -27,11 +27,188 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/service-fabric/cluster:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using client and server certificate parameter set](#example-1-using-client-and-server-certificate-parameter-set)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using client and server certificate parameter set_
+
+This instance deploys the module with client and server certificates using thumbprints and common names.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    managementEndpoint: 'https://sfccrt001.westeurope.cloudapp.azure.com:19080'
+    name: 'sfccrt001'
+    nodeTypes: [
+      {
+        applicationPorts: {
+          endPort: 30000
+          startPort: 20000
+        }
+        clientConnectionEndpointPort: 19000
+        durabilityLevel: 'Bronze'
+        ephemeralPorts: {
+          endPort: 65534
+          startPort: 49152
+        }
+        httpGatewayEndpointPort: 19080
+        isPrimary: true
+        name: 'Node01'
+      }
+    ]
+    reliabilityLevel: 'None'
+    // Non-required parameters
+    certificateCommonNames: {
+      commonNames: [
+        {
+          certificateCommonName: 'certcommon'
+          certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+        }
+      ]
+      x509StoreName: 'My'
+    }
+    clientCertificateThumbprints: [
+      {
+        certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
+        isAdmin: true
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "managementEndpoint": {
+      "value": "https://sfccrt001.westeurope.cloudapp.azure.com:19080"
+    },
+    "name": {
+      "value": "sfccrt001"
+    },
+    "nodeTypes": {
+      "value": [
+        {
+          "applicationPorts": {
+            "endPort": 30000,
+            "startPort": 20000
+          },
+          "clientConnectionEndpointPort": 19000,
+          "durabilityLevel": "Bronze",
+          "ephemeralPorts": {
+            "endPort": 65534,
+            "startPort": 49152
+          },
+          "httpGatewayEndpointPort": 19080,
+          "isPrimary": true,
+          "name": "Node01"
+        }
+      ]
+    },
+    "reliabilityLevel": {
+      "value": "None"
+    },
+    // Non-required parameters
+    "certificateCommonNames": {
+      "value": {
+        "commonNames": [
+          {
+            "certificateCommonName": "certcommon",
+            "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
+          }
+        ],
+        "x509StoreName": "My"
+      }
+    },
+    "clientCertificateThumbprints": {
+      "value": [
+        {
+          "certificateThumbprint": "D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE",
+          "isAdmin": true
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-fabric/cluster:<version>'
+
+// Required parameters
+param managementEndpoint = 'https://sfccrt001.westeurope.cloudapp.azure.com:19080'
+param name = 'sfccrt001'
+param nodeTypes = [
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Bronze'
+    ephemeralPorts: {
+      endPort: 65534
+      startPort: 49152
+    }
+    httpGatewayEndpointPort: 19080
+    isPrimary: true
+    name: 'Node01'
+  }
+]
+param reliabilityLevel = 'None'
+// Non-required parameters
+param certificateCommonNames = {
+  commonNames: [
+    {
+      certificateCommonName: 'certcommon'
+      certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    }
+  ]
+  x509StoreName: 'My'
+}
+param clientCertificateThumbprints = [
+  {
+    certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
+    isAdmin: true
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -79,7 +256,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -131,7 +308,45 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-fabric/cluster:<version>'
+
+// Required parameters
+param managementEndpoint = 'https://sfcmin001.westeurope.cloudapp.azure.com:19080'
+param name = 'sfcmin001'
+param nodeTypes = [
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Bronze'
+    ephemeralPorts: {
+      endPort: 65534
+      startPort: 49152
+    }
+    httpGatewayEndpointPort: 19080
+    isPrimary: true
+    name: 'Node01'
+  }
+]
+param reliabilityLevel = 'None'
+// Non-required parameters
+param certificate = {
+  thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+}
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -324,7 +539,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -547,7 +762,190 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-fabric/cluster:<version>'
+
+// Required parameters
+param managementEndpoint = 'https://sfcmax001.westeurope.cloudapp.azure.com:19080'
+param name = 'sfcmax001'
+param nodeTypes = [
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Silver'
+    ephemeralPorts: {
+      endPort: 65534
+      startPort: 49152
+    }
+    httpGatewayEndpointPort: 19080
+    isPrimary: true
+    isStateless: false
+    multipleAvailabilityZones: false
+    name: 'Node01'
+    placementProperties: {}
+    reverseProxyEndpointPort: ''
+    vmInstanceCount: 5
+  }
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Bronze'
+    ephemeralPorts: {
+      endPort: 64000
+      httpGatewayEndpointPort: 19007
+      isPrimary: true
+      name: 'Node02'
+      startPort: 49000
+      vmInstanceCount: 5
+    }
+  }
+]
+param reliabilityLevel = 'Silver'
+// Non-required parameters
+param addOnFeatures = [
+  'BackupRestoreService'
+  'DnsService'
+  'RepairManager'
+  'ResourceMonitorService'
+]
+param applicationTypes = [
+  {
+    name: 'WordCount'
+  }
+]
+param azureActiveDirectory = {
+  clientApplication: '<clientApplication>'
+  clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
+  tenantId: '<tenantId>'
+}
+param certificateCommonNames = {
+  commonNames: [
+    {
+      certificateCommonName: 'certcommon'
+      certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    }
+  ]
+  x509StoreName: 'My'
+}
+param clientCertificateCommonNames = [
+  {
+    certificateCommonName: 'clientcommoncert1'
+    certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    isAdmin: false
+  }
+  {
+    certificateCommonName: 'clientcommoncert2'
+    certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
+    isAdmin: false
+  }
+]
+param diagnosticsStorageAccountConfig = {
+  blobEndpoint: '<blobEndpoint>'
+  protectedAccountKeyName: 'StorageAccountKey1'
+  queueEndpoint: '<queueEndpoint>'
+  storageAccountName: '<storageAccountName>'
+  tableEndpoint: '<tableEndpoint>'
+}
+param fabricSettings = [
+  {
+    name: 'Security'
+    parameters: [
+      {
+        name: 'ClusterProtectionLevel'
+        value: 'EncryptAndSign'
+      }
+    ]
+  }
+  {
+    name: 'UpgradeService'
+    parameters: [
+      {
+        name: 'AppPollIntervalInSeconds'
+        value: '60'
+      }
+    ]
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maxUnusedVersionsToKeep = 2
+param notifications = [
+  {
+    isEnabled: true
+    notificationCategory: 'WaveProgress'
+    notificationLevel: 'Critical'
+    notificationTargets: [
+      {
+        notificationChannel: 'EmailUser'
+        receivers: [
+          'SomeReceiver'
+        ]
+      }
+    ]
+  }
+]
+param roleAssignments = [
+  {
+    name: '26b52f01-eebc-4056-a516-41541369258c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  clusterName: 'sfcmax001'
+  'hidden-title': 'This is visible in the resource name'
+  resourceType: 'Service Fabric'
+}
+param upgradeDescription = {
+  deltaHealthPolicy: {
+    maxPercentDeltaUnhealthyApplications: 0
+    maxPercentDeltaUnhealthyNodes: 0
+    maxPercentUpgradeDomainDeltaUnhealthyNodes: 0
+  }
+  forceRestart: false
+  healthCheckRetryTimeout: '00:45:00'
+  healthCheckStableDuration: '00:01:00'
+  healthCheckWaitDuration: '00:00:30'
+  healthPolicy: {
+    maxPercentUnhealthyApplications: 0
+    maxPercentUnhealthyNodes: 0
+  }
+  upgradeDomainTimeout: '02:00:00'
+  upgradeReplicaSetCheckTimeout: '1.00:00:00'
+  upgradeTimeout: '02:00:00'
+}
+param vmImage = 'Linux'
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -712,7 +1110,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -898,6 +1296,161 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-fabric/cluster:<version>'
+
+// Required parameters
+param managementEndpoint = 'https://sfcwaf001.westeurope.cloudapp.azure.com:19080'
+param name = 'sfcwaf001'
+param nodeTypes = [
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Silver'
+    ephemeralPorts: {
+      endPort: 65534
+      startPort: 49152
+    }
+    httpGatewayEndpointPort: 19080
+    isPrimary: true
+    isStateless: false
+    multipleAvailabilityZones: false
+    name: 'Node01'
+    placementProperties: {}
+    reverseProxyEndpointPort: ''
+    vmInstanceCount: 5
+  }
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Bronze'
+    ephemeralPorts: {
+      endPort: 64000
+      httpGatewayEndpointPort: 19007
+      isPrimary: true
+      name: 'Node02'
+      startPort: 49000
+      vmInstanceCount: 5
+    }
+  }
+]
+param reliabilityLevel = 'Silver'
+// Non-required parameters
+param addOnFeatures = [
+  'BackupRestoreService'
+  'DnsService'
+  'RepairManager'
+  'ResourceMonitorService'
+]
+param applicationTypes = [
+  {
+    name: 'WordCount'
+  }
+]
+param azureActiveDirectory = {
+  clientApplication: '<clientApplication>'
+  clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
+  tenantId: '<tenantId>'
+}
+param certificate = {
+  thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+  x509StoreName: 'My'
+}
+param clientCertificateCommonNames = [
+  {
+    certificateCommonName: 'clientcommoncert1'
+    certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    isAdmin: false
+  }
+  {
+    certificateCommonName: 'clientcommoncert2'
+    certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
+    isAdmin: false
+  }
+]
+param diagnosticsStorageAccountConfig = {
+  blobEndpoint: '<blobEndpoint>'
+  protectedAccountKeyName: 'StorageAccountKey1'
+  queueEndpoint: '<queueEndpoint>'
+  storageAccountName: '<storageAccountName>'
+  tableEndpoint: '<tableEndpoint>'
+}
+param fabricSettings = [
+  {
+    name: 'Security'
+    parameters: [
+      {
+        name: 'ClusterProtectionLevel'
+        value: 'EncryptAndSign'
+      }
+    ]
+  }
+  {
+    name: 'UpgradeService'
+    parameters: [
+      {
+        name: 'AppPollIntervalInSeconds'
+        value: '60'
+      }
+    ]
+  }
+]
+param location = '<location>'
+param maxUnusedVersionsToKeep = 2
+param notifications = [
+  {
+    isEnabled: true
+    notificationCategory: 'WaveProgress'
+    notificationLevel: 'Critical'
+    notificationTargets: [
+      {
+        notificationChannel: 'EmailUser'
+        receivers: [
+          'SomeReceiver'
+        ]
+      }
+    ]
+  }
+]
+param tags = {
+  clusterName: 'sfcwaf001'
+  'hidden-title': 'This is visible in the resource name'
+  resourceType: 'Service Fabric'
+}
+param upgradeDescription = {
+  deltaHealthPolicy: {
+    maxPercentDeltaUnhealthyApplications: 0
+    maxPercentDeltaUnhealthyNodes: 0
+    maxPercentUpgradeDomainDeltaUnhealthyNodes: 0
+  }
+  forceRestart: false
+  healthCheckRetryTimeout: '00:45:00'
+  healthCheckStableDuration: '00:01:00'
+  healthCheckWaitDuration: '00:00:30'
+  healthPolicy: {
+    maxPercentUnhealthyApplications: 0
+    maxPercentUnhealthyNodes: 0
+  }
+  upgradeDomainTimeout: '02:00:00'
+  upgradeReplicaSetCheckTimeout: '1.00:00:00'
+  upgradeTimeout: '02:00:00'
+}
+param vmImage = 'Linux'
 ```
 
 </details>

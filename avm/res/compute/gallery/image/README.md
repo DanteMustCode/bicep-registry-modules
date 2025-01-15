@@ -264,6 +264,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ### Parameter: `privacyStatementUri`
 
@@ -432,6 +433,8 @@ The security type of the image. Requires a hyperVGeneration V2.
     'ConfidentialVMSupported'
     'Standard'
     'TrustedLaunch'
+    'TrustedLaunchAndConfidentialVmSupported'
+    'TrustedLaunchSupported'
   ]
   ```
 
@@ -483,6 +486,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ## Outputs
 

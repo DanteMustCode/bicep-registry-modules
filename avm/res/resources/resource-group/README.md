@@ -8,6 +8,7 @@ This module deploys a Resource Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -43,10 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
   name: 'resourceGroupDeployment'
   params: {
-    // Required parameters
     name: 'avm-resources.resourcegroups-rrgmin-rg'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -56,23 +54,31 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "avm-resources.resourcegroups-rrgmin-rg"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/resource-group:<version>'
+
+param name = 'avm-resources.resourcegroups-rrgmin-rg'
 ```
 
 </details>
@@ -132,7 +138,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -188,6 +194,50 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/resource-group:<version>'
+
+// Required parameters
+param name = 'avm-resources.resourcegroups-rrgmax-rg'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '3566ddd3-870d-4618-bd22-3d50915a21ef'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -204,11 +254,6 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
     // Required parameters
     name: 'avm-resources.resourcegroups-rrgwaf-rg'
     // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -223,7 +268,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -235,15 +280,6 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
       "value": "avm-resources.resourcegroups-rrgwaf-rg"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -252,6 +288,26 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/resource-group:<version>'
+
+// Required parameters
+param name = 'avm-resources.resourcegroups-rrgwaf-rg'
+// Non-required parameters
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -446,6 +502,14 @@ Tags of the storage account resource.
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the resource group. |
 | `resourceId` | string | The resource ID of the resource group. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 

@@ -5,36 +5,135 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "5150103142771299599"
+      "version": "0.32.4.45862",
+      "templateHash": "12404539047677705162"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
-        "systemAssigned": {
-          "type": "bool",
+        "name": {
+          "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Optional. The name of the diagnostic setting."
           }
         },
-        "userAssignedResourceIds": {
+        "logCategoriesAndGroups": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -59,200 +158,115 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -322,7 +336,8 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
@@ -336,6 +351,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -374,7 +390,11 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -429,7 +449,11 @@
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
@@ -791,8 +815,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17160750790361326516"
+              "version": "0.32.4.45862",
+              "templateHash": "18387862600358779253"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -1031,10 +1055,7 @@
                 "type": "[parameters('type')]",
                 "value": "[parameters('value')]",
                 "wsdlSelector": "[coalesce(parameters('wsdlSelector'), createObject())]"
-              },
-              "dependsOn": [
-                "service"
-              ]
+              }
             },
             "policy": {
               "copy": {
@@ -1069,8 +1090,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "2474188503939052987"
+                      "version": "0.32.4.45862",
+                      "templateHash": "907926791460586140"
                     },
                     "name": "API Management Service APIs Policies",
                     "description": "This module deploys an API Management Service API Policy.",
@@ -1216,8 +1237,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "15630166564208731013"
+                      "version": "0.32.4.45862",
+                      "templateHash": "12634911878831297857"
                     },
                     "name": "API Management Service APIs Diagnostics.",
                     "description": "This module deploys an API Management Service API Diagnostics.",
@@ -1444,8 +1465,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17159723717884761443"
+              "version": "0.32.4.45862",
+              "templateHash": "2984286284615323058"
             },
             "name": "API Management Service API Version Sets",
             "description": "This module deploys an API Management Service API Version Set.",
@@ -1530,6 +1551,9 @@
           "name": {
             "value": "[variables('authorizationServerList')[copyIndex()].name]"
           },
+          "displayName": {
+            "value": "[variables('authorizationServerList')[copyIndex()].displayName]"
+          },
           "authorizationEndpoint": {
             "value": "[variables('authorizationServerList')[copyIndex()].authorizationEndpoint]"
           },
@@ -1582,8 +1606,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4256977187793378377"
+              "version": "0.32.4.45862",
+              "templateHash": "524425489707629463"
             },
             "name": "API Management Service Authorization Servers",
             "description": "This module deploys an API Management Service Authorization Server.",
@@ -1594,6 +1618,13 @@
               "type": "string",
               "metadata": {
                 "description": "Required. Identifier of the authorization server."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "maxLength": 50,
+              "metadata": {
+                "description": "Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long."
               }
             },
             "apiManagementServiceName": {
@@ -1732,7 +1763,7 @@
                 "bearerTokenSendingMethods": "[parameters('bearerTokenSendingMethods')]",
                 "resourceOwnerUsername": "[parameters('resourceOwnerUsername')]",
                 "resourceOwnerPassword": "[parameters('resourceOwnerPassword')]",
-                "displayName": "[parameters('name')]",
+                "displayName": "[parameters('displayName')]",
                 "clientRegistrationEndpoint": "[parameters('clientRegistrationEndpoint')]",
                 "authorizationEndpoint": "[parameters('authorizationEndpoint')]",
                 "grantTypes": "[parameters('grantTypes')]",
@@ -1825,8 +1856,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2365531440872951056"
+              "version": "0.32.4.45862",
+              "templateHash": "2165388618911761186"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend.",
@@ -1934,10 +1965,7 @@
                 "tls": "[parameters('tls')]",
                 "url": "[parameters('url')]",
                 "protocol": "[parameters('protocol')]"
-              },
-              "dependsOn": [
-                "service"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2009,8 +2037,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3234729148013684780"
+              "version": "0.32.4.45862",
+              "templateHash": "11874790944759917192"
             },
             "name": "API Management Service Caches",
             "description": "This module deploys an API Management Service Cache.",
@@ -2072,10 +2100,7 @@
                 "connectionString": "[parameters('connectionString')]",
                 "useFromLocation": "[parameters('useFromLocation')]",
                 "resourceId": "[parameters('resourceId')]"
-              },
-              "dependsOn": [
-                "service"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2167,8 +2192,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15630166564208731013"
+              "version": "0.32.4.45862",
+              "templateHash": "12634911878831297857"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics.",
@@ -2397,8 +2422,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12757169124799431378"
+              "version": "0.32.4.45862",
+              "templateHash": "5753800904617438816"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider.",
@@ -2533,10 +2558,7 @@
                 "clientId": "[parameters('clientId')]",
                 "clientLibrary": "[parameters('clientLibrary')]",
                 "clientSecret": "[parameters('clientSecret')]"
-              },
-              "dependsOn": [
-                "service"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2592,12 +2614,12 @@
             "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'credentials'), createObject())]"
           },
           "isBuffered": {
-            "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'isBuffered'), true())]"
+            "value": "[tryGet(parameters('loggers')[copyIndex()], 'isBuffered')]"
           },
-          "loggerDescription": {
-            "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'loggerDescription'), '')]"
+          "description": {
+            "value": "[tryGet(parameters('loggers')[copyIndex()], 'loggerDescription')]"
           },
-          "loggerType": {
+          "type": {
             "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'loggerType'), 'azureMonitor')]"
           },
           "targetResourceId": {
@@ -2610,8 +2632,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12986610229102962453"
+              "version": "0.32.4.45862",
+              "templateHash": "18266779272587485714"
             },
             "name": "API Management Service Loggers",
             "description": "This module deploys an API Management Service Logger.",
@@ -2630,8 +2652,9 @@
                 "description": "Required. Resource Name."
               }
             },
-            "loggerDescription": {
+            "description": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. Logger description."
               }
@@ -2643,7 +2666,7 @@
                 "description": "Optional. Whether records are buffered in the logger before publishing."
               }
             },
-            "loggerType": {
+            "type": {
               "type": "string",
               "allowedValues": [
                 "applicationInsights",
@@ -2674,9 +2697,9 @@
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "credentials": "[parameters('credentials')]",
-                "description": "[parameters('loggerDescription')]",
+                "description": "[parameters('description')]",
                 "isBuffered": "[parameters('isBuffered')]",
-                "loggerType": "[parameters('loggerType')]",
+                "loggerType": "[parameters('type')]",
                 "resourceId": "[parameters('targetResourceId')]"
               }
             }
@@ -2754,8 +2777,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3479776319506170502"
+              "version": "0.32.4.45862",
+              "templateHash": "2210396703029626013"
             },
             "name": "API Management Service Named Values",
             "description": "This module deploys an API Management Service Named Value.",
@@ -2829,10 +2852,7 @@
                 "displayName": "[parameters('displayName')]",
                 "value": "[if(variables('keyVaultEmpty'), parameters('value'), null())]",
                 "keyVault": "[if(not(variables('keyVaultEmpty')), parameters('keyVault'), null())]"
-              },
-              "dependsOn": [
-                "service"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2895,8 +2915,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10271256088614129674"
+              "version": "0.32.4.45862",
+              "templateHash": "17754762263800452793"
             },
             "name": "API Management Service Portal Settings",
             "description": "This module deploys an API Management Service Portal Setting.",
@@ -2994,8 +3014,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "11443463088593763324"
+              "version": "0.32.4.45862",
+              "templateHash": "14398991278599476654"
             },
             "name": "API Management Service Policies",
             "description": "This module deploys an API Management Service Policy.",
@@ -3089,6 +3109,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "displayName": {
+            "value": "[parameters('products')[copyIndex()].displayName]"
+          },
           "apiManagementServiceName": {
             "value": "[parameters('name')]"
           },
@@ -3126,8 +3149,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6230115773857876317"
+              "version": "0.32.4.45862",
+              "templateHash": "13145860559425712027"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product.",
@@ -3138,6 +3161,13 @@
               "type": "string",
               "metadata": {
                 "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "maxLength": 300,
+              "metadata": {
+                "description": "Required. API Management Service Products name. Must be 1 to 300 characters long."
               }
             },
             "approvalRequired": {
@@ -3210,7 +3240,7 @@
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
-                "displayName": "[parameters('name')]",
+                "displayName": "[parameters('displayName')]",
                 "terms": "[parameters('terms')]",
                 "subscriptionRequired": "[parameters('subscriptionRequired')]",
                 "approvalRequired": "[if(parameters('subscriptionRequired'), parameters('approvalRequired'), null())]",
@@ -3248,8 +3278,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "1052981479169082206"
+                      "version": "0.32.4.45862",
+                      "templateHash": "2246324966212131680"
                     },
                     "name": "API Management Service Products APIs",
                     "description": "This module deploys an API Management Service Product API.",
@@ -3338,8 +3368,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "5748451278124986706"
+                      "version": "0.32.4.45862",
+                      "templateHash": "15160095833640514018"
                     },
                     "name": "API Management Service Products Groups",
                     "description": "This module deploys an API Management Service Product Group.",
@@ -3469,6 +3499,9 @@
           "name": {
             "value": "[parameters('subscriptions')[copyIndex()].name]"
           },
+          "displayName": {
+            "value": "[parameters('subscriptions')[copyIndex()].displayName]"
+          },
           "allowTracing": {
             "value": "[tryGet(parameters('subscriptions')[copyIndex()], 'allowTracing')]"
           },
@@ -3495,8 +3528,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "9499976066778278010"
+              "version": "0.32.4.45862",
+              "templateHash": "8786934572669068662"
             },
             "name": "API Management Service Subscriptions",
             "description": "This module deploys an API Management Service Subscription.",
@@ -3508,6 +3541,13 @@
               "defaultValue": true,
               "metadata": {
                 "description": "Optional. Determines whether tracing can be enabled."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "maxLength": 100,
+              "metadata": {
+                "description": "Required. API Management Service Subscriptions name. Must be 1 to 100 characters long."
               }
             },
             "apiManagementServiceName": {
@@ -3571,16 +3611,13 @@
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "scope": "[parameters('scope')]",
-                "displayName": "[parameters('name')]",
+                "displayName": "[parameters('displayName')]",
                 "ownerId": "[parameters('ownerId')]",
                 "primaryKey": "[parameters('primaryKey')]",
                 "secondaryKey": "[parameters('secondaryKey')]",
                 "state": "[parameters('state')]",
                 "allowTracing": "[parameters('allowTracing')]"
-              },
-              "dependsOn": [
-                "service"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3637,10 +3674,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('service', '2023-05-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('service', '2023-05-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

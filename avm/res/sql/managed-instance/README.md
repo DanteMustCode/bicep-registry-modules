@@ -17,15 +17,15 @@ This module deploys a SQL Managed Instance.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Sql/managedInstances` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances) |
-| `Microsoft.Sql/managedInstances/administrators` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/administrators) |
-| `Microsoft.Sql/managedInstances/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/databases) |
+| `Microsoft.Sql/managedInstances` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances) |
+| `Microsoft.Sql/managedInstances/administrators` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/administrators) |
+| `Microsoft.Sql/managedInstances/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/databases) |
 | `Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies` | [2022-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2022-05-01-preview/managedInstances/databases/backupLongTermRetentionPolicies) |
-| `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies) |
+| `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/databases/backupShortTermRetentionPolicies) |
 | `Microsoft.Sql/managedInstances/encryptionProtector` | [2022-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2022-05-01-preview/managedInstances/encryptionProtector) |
-| `Microsoft.Sql/managedInstances/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/keys) |
-| `Microsoft.Sql/managedInstances/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/securityAlertPolicies) |
-| `Microsoft.Sql/managedInstances/vulnerabilityAssessments` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/vulnerabilityAssessments) |
+| `Microsoft.Sql/managedInstances/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/keys) |
+| `Microsoft.Sql/managedInstances/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/securityAlertPolicies) |
+| `Microsoft.Sql/managedInstances/vulnerabilityAssessments` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/vulnerabilityAssessments) |
 
 ## Usage examples
 
@@ -69,7 +69,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -95,6 +95,25 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/managed-instance:<version>'
+
+// Required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param name = 'sqlmimin'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -234,7 +253,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -412,6 +431,130 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/managed-instance:<version>'
+
+// Required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param name = 'sqlmimax'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param collation = 'SQL_Latin1_General_CP1_CI_AS'
+param databases = [
+  {
+    backupLongTermRetentionPolicies: {
+      name: 'default'
+    }
+    backupShortTermRetentionPolicies: {
+      name: 'default'
+    }
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    name: 'sqlmimax-db-001'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param dnsZonePartner = ''
+param encryptionProtectorObj = {
+  serverKeyName: '<serverKeyName>'
+  serverKeyType: 'AzureKeyVault'
+}
+param hardwareFamily = 'Gen5'
+param keys = [
+  {
+    name: '<name>'
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param licenseType = 'LicenseIncluded'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param proxyOverride = 'Proxy'
+param publicDataEndpointEnabled = false
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param securityAlertPoliciesObj = {
+  emailAccountAdmins: true
+  name: 'default'
+  state: 'Enabled'
+}
+param servicePrincipal = 'SystemAssigned'
+param skuName = 'GP_Gen5'
+param skuTier = 'GeneralPurpose'
+param storageSizeInGB = 32
+param timezoneId = 'UTC'
+param vCores = 4
+param vulnerabilityAssessmentsObj = {
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
@@ -466,7 +609,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -522,6 +665,50 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/managed-instance:<version>'
+
+// Required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param name = 'sqlmivln'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param securityAlertPoliciesObj = {
+  emailAccountAdmins: true
+  name: 'default'
+  state: 'Enabled'
+}
+param vulnerabilityAssessmentsObj = {
+  createStorageRoleAssignment: true
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+  useStorageAccountAccessKey: false
 }
 ```
 
@@ -645,7 +832,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -797,6 +984,113 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         }
       }
     }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/managed-instance:<version>'
+
+// Required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param name = 'sqlmiwaf'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param collation = 'SQL_Latin1_General_CP1_CI_AS'
+param databases = [
+  {
+    backupLongTermRetentionPolicies: {
+      name: 'default'
+    }
+    backupShortTermRetentionPolicies: {
+      name: 'default'
+    }
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    name: 'sqlmiwaf-db-001'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param dnsZonePartner = ''
+param encryptionProtectorObj = {
+  serverKeyName: '<serverKeyName>'
+  serverKeyType: 'AzureKeyVault'
+}
+param hardwareFamily = 'Gen5'
+param keys = [
+  {
+    name: '<name>'
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param licenseType = 'LicenseIncluded'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param proxyOverride = 'Proxy'
+param publicDataEndpointEnabled = false
+param securityAlertPoliciesObj = {
+  emailAccountAdmins: true
+  name: 'default'
+  state: 'Enabled'
+}
+param servicePrincipal = 'SystemAssigned'
+param skuName = 'GP_Gen5'
+param skuTier = 'GeneralPurpose'
+param storageSizeInGB = 32
+param timezoneId = 'UTC'
+param vCores = 4
+param vulnerabilityAssessmentsObj = {
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
   }
 }
 ```

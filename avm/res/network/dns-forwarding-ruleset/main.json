@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8260746772295919880"
+      "version": "0.32.4.45862",
+      "templateHash": "16077001068365100119"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -190,7 +190,7 @@
             }
           },
           "port": {
-            "type": "string",
+            "type": "int",
             "metadata": {
               "description": "Required. The port of the target DNS server."
             }
@@ -394,8 +394,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17239011184377594139"
+              "version": "0.32.4.45862",
+              "templateHash": "17165864764044430627"
             },
             "name": "Dns Forwarding Rulesets Forwarding Rules",
             "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset.",
@@ -458,10 +458,7 @@
                 "forwardingRuleState": "[parameters('forwardingRuleState')]",
                 "metadata": "[parameters('metadata')]",
                 "targetDnsServers": "[parameters('targetDnsServers')]"
-              },
-              "dependsOn": [
-                "dnsForwardingRuleset"
-              ]
+              }
             }
           },
           "outputs": {
@@ -522,8 +519,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "14775682641579876025"
+              "version": "0.32.4.45862",
+              "templateHash": "15571195771593309920"
             },
             "name": "Dns Forwarding Rulesets Virtual Network Links",
             "description": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset.",
@@ -573,10 +570,7 @@
                   "id": "[parameters('virtualNetworkResourceId')]"
                 },
                 "metadata": "[parameters('metadata')]"
-              },
-              "dependsOn": [
-                "dnsForwardingRuleset"
-              ]
+              }
             }
           },
           "outputs": {
